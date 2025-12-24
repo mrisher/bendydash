@@ -5,7 +5,12 @@
 #include "EPD_GUI.h"  // Include the EPD_GUI library for graphical user interface (GUI) operations
 #include "pic.h"
 #include "small_assets.h"
-#include "avatars.h"
+
+namespace Oliver { #include "oliver_avatar.h" }
+namespace Naomi { #include "naomi_avatar.h" }
+namespace Daddy { #include "daddy_avatar.h" }
+namespace Mommy { #include "mommy_avatar.h" }
+
 #include <time.h>
 
 // Define a black and white image array as the buffer for the e-paper display
@@ -20,10 +25,10 @@ struct FamilyMember {
 
 // Mock Data for Schedule
 FamilyMember family_schedule[] = {
-    {"Oliver", gImage_oliver, "3:30 PM"},
-    {"Naomi", gImage_naomi, "3:30 PM"},
-    {"Daddy", gImage_daddy, "6:00 PM"},
-    {"Mommy", gImage_mommy, "5:30 PM"}
+    {"Oliver", Oliver::IMAGE, "3:30 PM"},
+    {"Naomi", Naomi::IMAGE, "3:30 PM"},
+    {"Daddy", Daddy::IMAGE, "6:00 PM"},
+    {"Mommy", Mommy::IMAGE, "5:30 PM"}
 };
 
 // WiFi network SSID and password
@@ -125,6 +130,7 @@ void UI_weather_forecast()
   memset(buffer, 0, sizeof(buffer));
   snprintf(buffer, sizeof(buffer), "Updated: %s %s", date_str.c_str(), time_str.c_str());
   EPD_ShowString(10, 270, buffer, 12, BLACK);
+}
 
 // Function to draw a single schedule cell
 void draw_schedule_cell(int col, int row, int index) {
@@ -143,12 +149,6 @@ void draw_schedule_cell(int col, int row, int index) {
   
   // Time below name
   EPD_ShowString(x_start + 5, avatar_y + 110, family_schedule[index].home_time, 16, BLACK);
-}
-
-// Display weather forecast information
-void UI_weather_forecast()
-{
-  // ... (existing code) ...
 
   // Draw separator line
   EPD_DrawLine(210, 0, 210, 300, BLACK); // Vertical line separating weather from future schedule
