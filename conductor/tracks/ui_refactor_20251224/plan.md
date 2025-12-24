@@ -10,20 +10,11 @@
     - [ ] Sub-task: Integrate new assets into the project (update header files).
 
 ## Phase 2: UI Logic Implementation
-- [ ] Task: Implement Row 1 (Current Weather)
-    - [ ] Sub-task: Write Tests (Mock display output or use serial logging to verify correct coordinates and data).
-    - [ ] Sub-task: Implement drawing logic for Weather Icon and Text on the E-Paper.
-- [ ] Task: Implement Row 2 (Temperature)
-    - [ ] Sub-task: Write Tests (Verify temperature formatting and placement).
-    - [ ] Sub-task: Implement drawing logic for Temperature.
-- [ ] Task: Implement Row 3 (Rain Forecast)
-    - [ ] Sub-task: Write Tests (Verify percentage formatting and placement).
-    - [ ] Sub-task: Implement drawing logic for Rain Forecast %.
-- [ ] Task: Implement Row 4 (Status Info)
-    - [ ] Sub-task: Write Tests (Verify timestamp generation, city name, and WiFi icon toggling).
-    - [ ] Sub-task: Implement drawing logic for Status Row.
-- [ ] Task: Clear Right Side of Screen
-    - [ ] Sub-task: Ensure no drawing commands target the right half of the display buffer.
+- [x] Task: Implement Row 1 (Current Weather) 3c60e9b
+- [x] Task: Implement Row 2 (Temperature) 3c60e9b
+- [x] Task: Implement Row 3 (Rain Forecast) 3c60e9b
+- [x] Task: Implement Row 4 (Status Info) 3c60e9b
+- [x] Task: Clear Right Side of Screen 3c60e9b
 
 ## Phase 3: Integration & cleanup
 - [ ] Task: Full System Test
