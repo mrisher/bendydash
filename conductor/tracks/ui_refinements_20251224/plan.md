@@ -12,14 +12,14 @@
     - [ ] Sub-task: Update `js_analysis` or setup to fetch/store date and SSID.
 
 ## Phase 2: UI Implementation
-- [ ] Task: Update Temperature Row
-    - [ ] Sub-task: Implement drawing logic for corrected Celsius string.
-    - [ ] Sub-task: Implement drawing logic for Fahrenheit string (smaller font, below Celsius).
-- [ ] Task: Update Status Row (WiFi & SSID)
-    - [ ] Sub-task: Implement drawing logic for new smaller WiFi icon.
-    - [ ] Sub-task: Implement drawing logic for SSID (smaller font, lower position).
-- [ ] Task: Update Status Row (Date/Time)
-    - [ ] Sub-task: Implement drawing logic for combined Date & Time string.
+- [x] Task: Update Temperature Row 8b8dc02
+    - [x] Sub-task: Implement drawing logic for corrected Celsius string.
+    - [x] Sub-task: Implement drawing logic for Fahrenheit string (smaller font, below Celsius).
+- [x] Task: Update Status Row (WiFi & SSID) 8b8dc02
+    - [x] Sub-task: Implement drawing logic for new smaller WiFi icon.
+    - [x] Sub-task: Implement drawing logic for SSID (smaller font, lower position).
+- [x] Task: Update Status Row (Date/Time) 8b8dc02
+    - [x] Sub-task: Implement drawing logic for combined Date & Time string.
 
 ## Phase 3: Integration & cleanup
 - [ ] Task: Full System Test
