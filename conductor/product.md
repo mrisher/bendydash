@@ -8,8 +8,8 @@
 - Provide a clear, low-power weather dashboard on a 4.2" E-Paper display.
 
 ## Core Features
-- **Compact Weather UI:** Optimize the display to use less space for weather information.
-- **Rain Probability:** Display the likelihood of precipitation.
+- **Compact Weather UI (Implemented):** Optimized the display into a four-row layout for weather and status.
+- **Rain Probability (Implemented):** Fetches and displays precipitation probability from OpenWeatherMap forecast.
 - **Afterschool Schedule:** Display children's afterschool schedules, fetched from a simple online storage source (TBD).
 - **Existing Functionality:** Maintain OpenWeatherMap integration (adapted for the new UI).
 
