@@ -39,7 +39,8 @@ JSONVar myObject;  // JSON data object
 
 // Weather-related information
 String weather;
-String temperature;
+String temperature; // Celsius formatted
+String temp_f;      // Fahrenheit formatted
 String humidity;
 String sea_level;
 String wind_speed;
@@ -176,7 +177,19 @@ void js_analysis()
     JSONVar currentForecast = myObject["list"][0];
     
     weather = (const char*)currentForecast["weather"][0]["main"]; // Get the main weather description
-    temperature = JSON.stringify(currentForecast["main"]["temp"]); // Get the temperature
+    
+    // Process Temperature
+    double temp_val = (double)currentForecast["main"]["temp"];
+    char temp_buff[20];
+    
+    // Format Celsius: "XX.XXC"
+    snprintf(temp_buff, sizeof(temp_buff), "%.2fC", temp_val);
+    temperature = String(temp_buff);
+    
+    // Calculate and Format Fahrenheit: "XX.XF"
+    double temp_f_val = (temp_val * 9.0 / 5.0) + 32.0;
+    snprintf(temp_buff, sizeof(temp_buff), "(%.1fF)", temp_f_val);
+    temp_f = String(temp_buff);
     
     // Get humidity
     int hum_val = (int)currentForecast["main"]["humidity"];
