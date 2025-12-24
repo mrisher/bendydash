@@ -6,31 +6,12 @@ def to_c_array(name, img):
     img = img.convert('1')
     width, height = img.size
     bytes_per_row = (width + 7) // 8
-    data = []
-    for y in range(height):
-        for b in range(bytes_per_row):
-            byte = 0
-            for i in range(8):
-                x = b * 8 + i
-                if x < width:
-                    # In EPD, 0 is often black, 1 is white
-                    # Pillow '1' mode: 0 is black, 255 is white
-                    pixel = img.getpixel((x, y))
-                    if pixel == 0: # Black
-                        # We want 0 for black in the bit stream?
-                        # Let's check EPD_GUI.cpp
-                        pass
-                    else: # White
-                        byte |= (1 << (7 - i))
-            data.append(byte)
     
-    # EPD_ShowPicture expects data where each bit represents a pixel
-    # and typically 1 is WHITE and 0 is BLACK if we pass WHITE as background?
-    # Actually, the EPD_ShowPicture logic in EPD_GUI.cpp:
+    # EPD_ShowPicture logic in EPD_GUI.cpp:
     # if(temp&0x80) Paint_DrawPoint(x+i,y+j,Color,DOT_PIXEL_1X1,DOT_STYLE_DFT);
-    # This means if the bit is 1, it draws with the 'Color' (usually BLACK) 
+    # This means if the bit is 1, it draws with the 'Color' (usually BLACK)
     
-    # Let's reverse it: we want 1 for the icon color (BLACK) and 0 for background (WHITE)
+    # We want 1 for the icon color (BLACK) and 0 for background (WHITE)
     # So if pixel is 0 (Black in Pillow), we set bit to 1.
     
     data = []
@@ -50,7 +31,7 @@ def to_c_array(name, img):
         s += f"0x{b:02x}, "
         if (i + 1) % 12 == 0:
             s += "\n"
-    s += "\n};"
+    s += "\n";
     return s
 
 def draw_wifi(size):
@@ -58,11 +39,12 @@ def draw_wifi(size):
     draw = ImageDraw.Draw(img)
     # Draw arcs
     cx, cy = size // 2, size - 2
-    for r in [size-2, size-8, size-14]:
+    # Adjusted radii for 12x12 size
+    for r in [size-2, size-5, size-8]:
         if r > 0:
-            draw.arc([cx-r, cy-r, cx+r, cy+r], 225, 315, fill=0, width=2)
+            draw.arc([cx-r, cy-r, cx+r, cy+r], 225, 315, fill=0, width=1)
     # Dot at bottom
-    draw.ellipse([cx-2, cy-2, cx+2, cy], fill=0)
+    draw.point([cx, cy], fill=0)
     return img
 
 def draw_clear(size):
@@ -120,7 +102,7 @@ if __name__ == "__main__":
     with open("small_assets.h", "w") as f:
         f.write("#ifndef _SMALL_ASSETS_H_\n#define _SMALL_ASSETS_H_\n\n")
         
-        f.write(to_c_array("gImage_wifi_small", draw_wifi(24)))
+        f.write(to_c_array("gImage_wifi_small", draw_wifi(12)))
         f.write(to_c_array("weather_icon_mist", draw_mist(64)))
         f.write(to_c_array("weather_icon_clouds", draw_clouds(64)))
         f.write(to_c_array("weather_icon_thunder", draw_thunder(64)))
