@@ -6,7 +6,7 @@
     - [ ] Sub-task: Define a C struct and an array of mock data for the 4 family members (name, avatar index, coming home time).
 
 ## Phase 2: UI Implementation
-- [ ] Task: Implement Grid Drawing Logic
+- [x] Task: Implement Grid Drawing Logic 1fc05fb
     - [ ] Sub-task: Define grid cell coordinates (top-left, top-right, bottom-left, bottom-right).
     - [ ] Sub-task: Create a helper function `draw_schedule_cell(int x, int y, int index)` to render a single person's info.
     - [ ] Sub-task: Update `UI_weather_forecast` to call the grid drawing logic.
