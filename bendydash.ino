@@ -1,0 +1,297 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <Arduino_JSON.h>
+#include "EPD.h"  // Include the EPD library for controlling the electronic ink screen (E-Paper Display)
+#include "EPD_GUI.h"  // Include the EPD_GUI library for graphical user interface (GUI) operations
+#include "pic.h"
+#include <time.h>
+
+// Define a black and white image array as the buffer for the e-paper display
+uint8_t ImageBW[15000];  // Define the size based on the resolution of the e-paper display
+
+// WiFi network SSID and password
+const char* ssid = "bendystraw";
+const char* password = "smoothie";
+
+// OpenWeatherMap API key
+String openWeatherMapApiKey = "8694ad45d8092e69dab4743c96065901";
+
+// City and country code to query
+String city = "Paris";
+String countryCode = "2968815";
+
+// NTP Server settings
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 3600;
+const int   daylightOffset_sec = 3600;
+
+// Timer variables
+unsigned long lastTime = 0;
+// Set the timer to 10 seconds (10000 milliseconds) for testing
+// unsigned long timerDelay = 10000;
+// In production, set the timer to 10 minutes (600000 milliseconds), adjust according to API call limits
+unsigned long timerDelay = 600000;
+
+String jsonBuffer;  // To store the JSON data retrieved from the API
+int httpResponseCode;  // HTTP response code
+JSONVar myObject;  // JSON data object
+
+// Weather-related information
+String weather;
+String temperature;
+String humidity;
+String sea_level;
+String wind_speed;
+String rain_pop;
+String city_js;
+String time_str;
+int weather_flag = 0;
+
+// Clear all content on the display
+void clear_all()
+{
+  EPD_Clear(); // Clear the display content
+  Paint_NewImage(ImageBW, EPD_W, EPD_H, 0, WHITE); // Create a new image buffer, fill with white
+  EPD_Full(WHITE); // Fill the entire screen with white
+  EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); // Update the display content
+}
+
+// Display weather forecast information
+void UI_weather_forecast()
+{
+  // Create character arrays to store information
+  char buffer[40];
+
+  EPD_GPIOInit();  // Initialize the screen GPIO
+  EPD_Clear();  // Clear the screen
+  Paint_NewImage(ImageBW, EPD_W, EPD_H, 0, WHITE);  // Create a new canvas, set the canvas to white
+  EPD_Full(WHITE);  // Clear the canvas, fill with white
+  EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW);  // Display a blank canvas
+
+  EPD_Init_Fast(Fast_Seconds_1_5s);  // Initialize the screen, set update speed to 1.5 seconds
+
+  // Display weather-related icons and information
+  EPD_ShowPicture(7, 10, 184, 208, Weather_Num[weather_flag], WHITE);
+  EPD_ShowPicture(205, 22, 184, 88, gImage_city, WHITE);
+  EPD_ShowPicture(6, 238, 96, 40, gImage_wind, WHITE);
+  EPD_ShowPicture(205, 120, 184, 88, gImage_hum, WHITE);
+  EPD_ShowPicture(112, 238, 144, 40, gImage_tem, WHITE);
+  EPD_ShowPicture(265, 238, 128, 40, gImage_visi, WHITE);
+
+  // Draw partition lines
+  EPD_DrawLine(0, 230, 400, 230, BLACK); // Draw horizontal line
+  EPD_DrawLine(200, 0, 200, 230, BLACK); // Draw vertical line
+  EPD_DrawLine(200, 115, 400, 115, BLACK); // Draw horizontal line
+
+  // Display city name
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "%s ", city_js); // Format the updated city as a string
+  EPD_ShowString(290, 74, buffer, 24, BLACK); // Display city name
+
+  // Display updated time
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "Updated: %s", time_str.c_str());
+  EPD_ShowString(290, 100, buffer, 12, BLACK); // Display updated time below city
+
+  // Display temperature
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "%s C", temperature); // Format the updated temperature as a string
+  EPD_ShowString(160, 273, buffer, 16, BLACK); // Display temperature
+
+  // Display humidity
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "%s ", humidity); // Format the humidity as a string
+  EPD_ShowString(290, 171, buffer, 16, BLACK); // Display humidity
+
+  // Display wind speed
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "%s m/s", wind_speed); // Format the wind speed as a string
+  EPD_ShowString(54, 273, buffer, 16, BLACK); // Display wind speed
+
+  // Display sea level pressure
+  memset(buffer, 0, sizeof(buffer));
+  snprintf(buffer, sizeof(buffer), "%s ", sea_level); // Format the sea level pressure as a string
+  EPD_ShowString(316, 273, buffer, 16, BLACK); // Display sea level pressure
+
+  // Update the e-ink display content
+  EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); // Refresh the screen display
+
+  EPD_Sleep(); // Enter sleep mode to save energy
+}
+
+void setup() {
+  Serial.begin(115200); // Initialize serial communication
+
+  // Connect to the WiFi network
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500); // Wait 0.5 seconds
+    Serial.print("."); // Print a dot in the serial monitor
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP()); // Print the IP address of the WiFi connection
+
+  Serial.println("Timer set to 10 seconds (timerDelay variable), it will take 10 seconds before publishing the first reading.");
+  
+  // Init and get the time
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  // Set the power pin of the screen to output mode and set it to high level to turn on the power
+  pinMode(7, OUTPUT);  // Set GPIO 7 to output mode
+  digitalWrite(7, HIGH);  // Set GPIO 7 to high level
+
+  // Initialize the e-ink display
+  EPD_GPIOInit();  // Initialize the GPIO pins of the e-ink display
+}
+
+void loop() {
+  js_analysis();  // Parse JSON data (this function is not provided in the code)
+  UI_weather_forecast();  // Display weather forecast information
+  delay(timerDelay); // Wait for the specified delay
+}
+
+// Function js_analysis is used to parse weather data and update weather information
+void js_analysis()
+{
+  // Check if WiFi is connected successfully
+  if (WiFi.status() == WL_CONNECTED) {
+    // Build the OpenWeatherMap API request URL - Using forecast to get probability of precipitation (pop)
+    String serverPath = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&APPID=" + openWeatherMapApiKey + "&units=metric&cnt=1";
+    Serial.println(serverPath);
+
+    // Loop until a successful HTTP response code of 200 is received
+    while (httpResponseCode != 200)
+    {
+      // Send an HTTP GET request and get JSON data
+      jsonBuffer = httpGETRequest(serverPath.c_str());
+      Serial.println(jsonBuffer); // Print the retrieved JSON data
+      myObject = JSON.parse(jsonBuffer); // Parse the JSON data
+
+      // Check if the JSON data was parsed successfully
+      if (JSON.typeof(myObject) == "undefined") {
+        Serial.println("Parsing input failed!"); // If parsing fails, print error message and exit
+        return;
+      }
+      delay(2000); // Wait 2 seconds
+    }
+
+    // Extract weather information from the first forecast entry (next 3 hours)
+    JSONVar currentForecast = myObject["list"][0];
+    
+    weather = JSON.stringify(currentForecast["weather"][0]["main"]); // Get the main weather description
+    temperature = JSON.stringify(currentForecast["main"]["temp"]); // Get the temperature
+    
+    // Get humidity
+    int hum_val = (int)currentForecast["main"]["humidity"];
+    humidity = String(hum_val) + "%";
+    
+    // Get Probability of Precipitation (pop) - usually 0 to 1
+    if (currentForecast.hasOwnProperty("pop")) {
+        double pop_val = (double)currentForecast["pop"];
+        rain_pop = String((int)(pop_val * 100)) + "%";
+    } else {
+        rain_pop = "0%";
+    }
+
+    sea_level = JSON.stringify(currentForecast["main"]["sea_level"]); // Get the sea level pressure
+    wind_speed = JSON.stringify(currentForecast["wind"]["speed"]); // Get the wind speed
+    city_js = (const char*)myObject["city"]["name"];  // city name is in a different place in forecast API
+
+    struct tm timeinfo;
+    if(!getLocalTime(&timeinfo)){
+      Serial.println("Failed to obtain time");
+      time_str = "--:--";
+    } else {
+      char time_buffer[10];
+      strftime(time_buffer, sizeof(time_buffer), "%H:%M", &timeinfo);
+      time_str = String(time_buffer);
+    }
+
+    // Print the extracted weather information
+    Serial.print("String weather: ");
+    Serial.println(weather);
+    Serial.print("String Temperature: ");
+    Serial.println(temperature);
+    Serial.print("String humidity: ");
+    Serial.println(humidity);
+    Serial.print("String rain_pop: ");
+    Serial.println(rain_pop);
+    Serial.print("String sea_level: ");
+    Serial.println(sea_level);
+    Serial.print("String wind_speed: ");
+    Serial.println(wind_speed);
+    Serial.print("String city_js: ");
+    Serial.println(city_js);
+    Serial.print("Time: ");
+    Serial.println(time_str);
+
+    // Set the weather flag based on the weather description
+    // Weather condition codes: https://openweathermap.org/weather-conditions
+    // Group 2xx: Thunderstorm
+    // Group 3xx: Drizzle
+    // Group 5xx: Rain
+    // Group 6xx: Snow
+    // Group 7xx: Atmosphere (Mist, Smoke, Haze, Dust, Fog, Sand, Dust, Ash, Squall, Tornado)
+    // Group 800: Clear
+    // Group 80x: Clouds
+
+    weather_flag = 0; // Default to Mist/Unknown
+
+    Serial.print("Weather string for flag: "); Serial.println(weather);
+
+    // Using string matching on the "main" description
+    if (weather.indexOf("Thunderstorm") != -1) {
+      weather_flag = 2; // Thunderstorm
+    } else if (weather.indexOf("Drizzle") != -1) {
+      weather_flag = 5; // Drizzle (treated as Rain)
+    } else if (weather.indexOf("Rain") != -1) {
+      weather_flag = 5; // Rain
+    } else if (weather.indexOf("Snow") != -1) {
+      weather_flag = 4; // Snow
+    } else if (weather.indexOf("Clear") != -1) {
+      weather_flag = 3; // Clear
+    } else if (weather.indexOf("Clouds") != -1) {
+      weather_flag = 1; // Clouds
+    } else if (weather.indexOf("Mist") != -1 || weather.indexOf("Smoke") != -1 || weather.indexOf("Haze") != -1 || 
+               weather.indexOf("Dust") != -1 || weather.indexOf("Fog") != -1 || weather.indexOf("Sand") != -1 || 
+               weather.indexOf("Ash") != -1 || weather.indexOf("Squall") != -1 || weather.indexOf("Tornado") != -1) {
+      weather_flag = 0; // Atmosphere conditions (Mist, etc.)
+    }
+
+    Serial.print("Final weather_flag: "); Serial.println(weather_flag);
+  }
+  else {
+    Serial.println("WiFi Disconnected"); // If WiFi is not connected, print error message
+  }
+}
+
+// Function httpGETRequest sends an HTTP GET request and returns the response content
+String httpGETRequest(const char* serverName) {
+  WiFiClient client; // Create a WiFi client object
+  HTTPClient http; // Create an HTTP client object
+
+  // Initialize the HTTP request with the specified URL
+  http.begin(client, serverName);
+
+  // Send the HTTP GET request
+  httpResponseCode = http.GET(); // Get the HTTP response code
+
+  String payload = "{}"; // Default response content is an empty JSON object
+
+  // Check if the HTTP response code is greater than 0 (indicating success)
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode); // Print the HTTP response code
+    payload = http.getString(); // Get the response content
+  }
+  else {
+    Serial.print("Error code: ");
+    Serial.println(httpResponseCode); // Print the error code
+  }
+  // Free the HTTP client resources
+  http.end();
+
+  return payload; // Return the response content
+}
