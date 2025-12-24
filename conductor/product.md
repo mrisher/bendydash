@@ -9,6 +9,7 @@
 
 ## Core Features
 - **Compact Weather UI (Implemented):** Optimized the display into a four-row layout for weather and status.
+- **Temperature Display (Refined):** Shows Celsius and Fahrenheit values; Date added to status timestamp; Network SSID replaces city name.
 - **Rain Probability (Implemented):** Fetches and displays precipitation probability from OpenWeatherMap forecast.
 - **Afterschool Schedule:** Display children's afterschool schedules, fetched from a simple online storage source (TBD).
 - **Existing Functionality:** Maintain OpenWeatherMap integration (adapted for the new UI).
