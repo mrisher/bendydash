@@ -47,6 +47,8 @@ String wind_speed;
 String rain_pop;
 String city_js;
 String time_str;
+String date_str; // New date string
+String wifi_ssid; // New SSID string
 int weather_flag = 0;
 
 // Clear all content on the display
@@ -206,15 +208,23 @@ void js_analysis()
     sea_level = JSON.stringify(currentForecast["main"]["sea_level"]); // Get the sea level pressure
     wind_speed = JSON.stringify(currentForecast["wind"]["speed"]); // Get the wind speed
     city_js = (const char*)myObject["city"]["name"];  // city name is in a different place in forecast API
+    
+    // Get WiFi SSID
+    wifi_ssid = WiFi.SSID();
 
     struct tm timeinfo;
     if(!getLocalTime(&timeinfo)){
       Serial.println("Failed to obtain time");
       time_str = "--:--";
+      date_str = "--/--";
     } else {
       char time_buffer[10];
       strftime(time_buffer, sizeof(time_buffer), "%H:%M", &timeinfo);
       time_str = String(time_buffer);
+      
+      char date_buffer[10];
+      strftime(date_buffer, sizeof(date_buffer), "%m-%d", &timeinfo);
+      date_str = String(date_buffer);
     }
 
     // Print the extracted weather information
