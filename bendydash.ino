@@ -36,10 +36,10 @@ struct FamilyMember {
 // Mock Data for Schedule
 // Dimensions taken from header file comments
 FamilyMember family_schedule[] = {
-    {"Oliver", Oliver::IMAGE, "3:30 PM", 64, 87},
-    {"Naomi", Naomi::IMAGE, "3:30 PM", 68, 93},
-    {"Daddy", Daddy::IMAGE, "6:00 PM", 47, 64},
-    {"Mommy", Mommy::IMAGE, "5:30 PM", 48, 84}
+    {"Oliver", Oliver::IMAGE, "4:30 PM Bus", 64, 87},
+    {"Naomi", Naomi::IMAGE, "7:30 PM Bus", 64, 87},
+    {"Daddy", Daddy::IMAGE, "6:00 PM", 64, 87},
+    {"Mommy", Mommy::IMAGE, "8:00 PM", 64, 87}
 };
 
 // WiFi network SSID and password
@@ -143,33 +143,28 @@ void UI_weather_forecast()
   EPD_ShowString(10, 270, buffer, 12, BLACK);
 
   // --- RIGHT SIDE: Family Schedule ---
-  Serial.println("Drawing family schedule...");
   int num_members = sizeof(family_schedule) / sizeof(family_schedule[0]);
   for (int i = 0; i < num_members; i++) {
       int col = i % 2;
       int row = i / 2;
       draw_schedule_cell(col, row, i);
-      Serial.print("Drawn cell for: ");
-      Serial.println(family_schedule[i].name);
   }
 
   // Update the display
-  Serial.println("Updating display with new image...");
   EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); 
-  Serial.println("Display update command sent.");
 }
 
 // Function to draw a single schedule cell
 void draw_schedule_cell(int col, int row, int index) {
-  int x_start = 210 + (col * 95);
+  int x_start = 190 + (col * 100);
   int y_start = (row * 150);
   
   uint16_t w = family_schedule[index].width;
   uint16_t h = family_schedule[index].height;
 
   // Center avatar in the 95px width
-  // Offset = (95 - width) / 2
-  int avatar_x = x_start + (95 - w) / 2;
+  // Offset = (100 - width) / 2
+  int avatar_x = x_start + (100 - w) / 2;
   int avatar_y = y_start + 10; // Padding from top
   
   EPD_ShowPicture(avatar_x, avatar_y, w, h, family_schedule[index].avatar, WHITE);
