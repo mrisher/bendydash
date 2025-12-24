@@ -6,10 +6,18 @@
 #include "pic.h"
 #include "small_assets.h"
 
-namespace Oliver { #include "oliver_avatar.h" }
-namespace Naomi { #include "naomi_avatar.h" }
-namespace Daddy { #include "daddy_avatar.h" }
-namespace Mommy { #include "mommy_avatar.h" }
+namespace Oliver {
+#include "oliver_avatar.h"
+}
+namespace Naomi {
+#include "naomi_avatar.h"
+}
+namespace Daddy {
+#include "daddy_avatar.h"
+}
+namespace Mommy {
+#include "mommy_avatar.h"
+}
 
 #include <time.h>
 
