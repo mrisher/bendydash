@@ -8,6 +8,5 @@
     - [ ] Sub-task: Update `family_schedule` to use the namespaced `IMAGE` arrays.
 
 ## Phase 2: Verification
-- [ ] Task: Full System Test
-    - [ ] Sub-task: Compile check (user to verify).
-- [ ] Task: Conductor - User Manual Verification 'Verification' (Protocol in workflow.md)
+- [x] Task: Full System Test 7799380
+- [x] Task: Conductor - User Manual Verification 'Verification' (Protocol in workflow.md) 7799380

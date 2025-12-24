@@ -12,6 +12,6 @@
     - [ ] Sub-task: Update `UI_weather_forecast` to call the grid drawing logic.
 
 ## Phase 3: Integration & Verification
-- [ ] Task: Full System Test
-    - [ ] Sub-task: Verify alignment and legibility on the 4.2" screen.
-- [ ] Task: Conductor - User Manual Verification 'Integration & Verification' (Protocol in workflow.md)
+- [x] Task: Full System Test 767ea7f
+    - [x] Sub-task: Verify alignment and legibility on the 4.2" screen.
+- [x] Task: Conductor - User Manual Verification 'Integration & Verification' (Protocol in workflow.md) 767ea7f

@@ -141,6 +141,22 @@ void UI_weather_forecast()
   memset(buffer, 0, sizeof(buffer));
   snprintf(buffer, sizeof(buffer), "Updated: %s %s", date_str.c_str(), time_str.c_str());
   EPD_ShowString(10, 270, buffer, 12, BLACK);
+
+  // --- RIGHT SIDE: Family Schedule ---
+  Serial.println("Drawing family schedule...");
+  int num_members = sizeof(family_schedule) / sizeof(family_schedule[0]);
+  for (int i = 0; i < num_members; i++) {
+      int col = i % 2;
+      int row = i / 2;
+      draw_schedule_cell(col, row, i);
+      Serial.print("Drawn cell for: ");
+      Serial.println(family_schedule[i].name);
+  }
+
+  // Update the display
+  Serial.println("Updating display with new image...");
+  EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); 
+  Serial.println("Display update command sent.");
 }
 
 // Function to draw a single schedule cell
