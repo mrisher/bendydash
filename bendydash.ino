@@ -4,6 +4,7 @@
 #include "EPD.h"  // Include the EPD library for controlling the electronic ink screen (E-Paper Display)
 #include "EPD_GUI.h"  // Include the EPD_GUI library for graphical user interface (GUI) operations
 #include "pic.h"
+#include "small_assets.h"
 #include <time.h>
 
 // Define a black and white image array as the buffer for the e-paper display
