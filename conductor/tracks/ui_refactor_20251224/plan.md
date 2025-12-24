@@ -4,7 +4,7 @@
 - [x] Task: Verify OpenWeatherMap API Response for Rain Data 33dfa5e
     - [ ] Sub-task: Write Tests (Create a small script or sketch to print the full JSON response and verify the `pop` field exists and is accessible).
     - [ ] Sub-task: Implement Feature (Update `bendydash.ino` or data parsing logic to extract rain probability).
-- [ ] Task: Prepare Visual Assets (Fonts/Bitmaps)
+- [x] Task: Prepare Visual Assets (Fonts/Bitmaps) b9bdb91
     - [ ] Sub-task: Analyze existing `pic.h` and `EPD_font.h` to determine what needs resizing.
     - [ ] Sub-task: Generate smaller weather icons and WiFi status icons using `convert_to_bmp.py` or find suitable built-in fonts.
     - [ ] Sub-task: Integrate new assets into the project (update header files).
