@@ -126,9 +126,46 @@ void UI_weather_forecast()
   snprintf(buffer, sizeof(buffer), "Updated: %s %s", date_str.c_str(), time_str.c_str());
   EPD_ShowString(10, 270, buffer, 12, BLACK);
 
+// Function to draw a single schedule cell
+void draw_schedule_cell(int col, int row, int index) {
+  int x_start = 210 + (col * 95);
+  int y_start = (row * 150);
+  
+  // Center avatar in the 95px width
+  // Avatar width is 64. Offset = (95 - 64) / 2 = 15.
+  int avatar_x = x_start + 15;
+  int avatar_y = y_start + 10; // Padding from top
+  
+  EPD_ShowPicture(avatar_x, avatar_y, 64, 87, family_schedule[index].avatar, WHITE);
+  
+  // Name below avatar
+  EPD_ShowString(x_start + 5, avatar_y + 90, family_schedule[index].name, 16, BLACK);
+  
+  // Time below name
+  EPD_ShowString(x_start + 5, avatar_y + 110, family_schedule[index].home_time, 16, BLACK);
+}
+
+// Display weather forecast information
+void UI_weather_forecast()
+{
+  // ... (existing code) ...
+
   // Draw separator line
   EPD_DrawLine(210, 0, 210, 300, BLACK); // Vertical line separating weather from future schedule
 
+  // --- SCHEDULE GRID (Right Side) ---
+  // Cell 0: Top-Left (Oliver)
+  draw_schedule_cell(0, 0, 0);
+  
+  // Cell 1: Top-Right (Naomi)
+  draw_schedule_cell(1, 0, 1);
+  
+  // Cell 2: Bottom-Left (Daddy)
+  draw_schedule_cell(0, 1, 2);
+  
+  // Cell 3: Bottom-Right (Mommy)
+  draw_schedule_cell(1, 1, 3);
+  
   // --- END OF LAYOUT ---
 
   // Update the e-ink display content
