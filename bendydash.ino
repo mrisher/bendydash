@@ -71,48 +71,42 @@ void UI_weather_forecast()
 
   EPD_Init_Fast(Fast_Seconds_1_5s);  // Initialize the screen, set update speed to 1.5 seconds
 
-  // Display weather-related icons and information
-  EPD_ShowPicture(7, 10, 184, 208, Weather_Num[weather_flag], WHITE);
-  EPD_ShowPicture(205, 22, 184, 88, gImage_city, WHITE);
-  EPD_ShowPicture(6, 238, 96, 40, gImage_wind, WHITE);
-  EPD_ShowPicture(205, 120, 184, 88, gImage_hum, WHITE);
-  EPD_ShowPicture(112, 238, 144, 40, gImage_tem, WHITE);
-  EPD_ShowPicture(265, 238, 128, 40, gImage_visi, WHITE);
+  // --- NEW COMPACT LAYOUT (Left Side) ---
+  
+  // Row 1: Current weather (Icon + Text)
+  // we use a mapping for weather_flag to Small_Weather_Icons
+  // Note: Original weather_flag logic: 0:Mist, 1:Clouds, 2:Thunderstorm, 3:Clear, 4:Snow, 5:Rain
+  // Small_Weather_Icons order in small_assets.h: 0:Mist, 1:Clouds, 2:Thunder, 3:Clear, 4:Snow, 5:Rain
+  EPD_ShowPicture(10, 10, 64, 64, Small_Weather_Icons[weather_flag], WHITE);
+  EPD_ShowString(85, 30, weather.c_str(), 16, BLACK);
 
-  // Draw partition lines
-  EPD_DrawLine(0, 230, 400, 230, BLACK); // Draw horizontal line
-  EPD_DrawLine(200, 0, 200, 230, BLACK); // Draw vertical line
-  EPD_DrawLine(200, 115, 400, 115, BLACK); // Draw horizontal line
-
-  // Display city name
+  // Row 2: Temperature (Large Font)
   memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s ", city_js); // Format the updated city as a string
-  EPD_ShowString(290, 74, buffer, 24, BLACK); // Display city name
+  snprintf(buffer, sizeof(buffer), "%s C", temperature.c_str());
+  EPD_ShowString(10, 90, buffer, 48, BLACK);
 
-  // Display updated time
-  memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "Updated: %s", time_str.c_str());
-  EPD_ShowString(290, 100, buffer, 12, BLACK); // Display updated time below city
+  // Row 3: Rain forecast % today
+  EPD_ShowString(10, 165, "Rain:", 24, BLACK);
+  EPD_ShowString(85, 165, rain_pop.c_str(), 24, BLACK);
 
-  // Display temperature
+  // Row 4: Status Info (WiFi + City + Last Updated)
+  // WiFi status icon
+  if (WiFi.status() == WL_CONNECTED) {
+    EPD_ShowPicture(10, 240, 24, 24, gImage_wifi_small, WHITE);
+  }
+  
+  // City name
+  EPD_ShowString(45, 240, city_js.c_str(), 16, BLACK);
+  
+  // Last Updated
   memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s C", temperature); // Format the updated temperature as a string
-  EPD_ShowString(160, 273, buffer, 16, BLACK); // Display temperature
+  snprintf(buffer, sizeof(buffer), "Upd: %s", time_str.c_str());
+  EPD_ShowString(45, 265, buffer, 12, BLACK);
 
-  // Display humidity
-  memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s ", humidity); // Format the humidity as a string
-  EPD_ShowString(290, 171, buffer, 16, BLACK); // Display humidity
+  // Draw separator line
+  EPD_DrawLine(210, 0, 210, 300, BLACK); // Vertical line separating weather from future schedule
 
-  // Display wind speed
-  memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s m/s", wind_speed); // Format the wind speed as a string
-  EPD_ShowString(54, 273, buffer, 16, BLACK); // Display wind speed
-
-  // Display sea level pressure
-  memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s ", sea_level); // Format the sea level pressure as a string
-  EPD_ShowString(316, 273, buffer, 16, BLACK); // Display sea level pressure
+  // --- END OF LAYOUT ---
 
   // Update the e-ink display content
   EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); // Refresh the screen display
@@ -181,7 +175,7 @@ void js_analysis()
     // Extract weather information from the first forecast entry (next 3 hours)
     JSONVar currentForecast = myObject["list"][0];
     
-    weather = JSON.stringify(currentForecast["weather"][0]["main"]); // Get the main weather description
+    weather = (const char*)currentForecast["weather"][0]["main"]; // Get the main weather description
     temperature = JSON.stringify(currentForecast["main"]["temp"]); // Get the temperature
     
     // Get humidity
