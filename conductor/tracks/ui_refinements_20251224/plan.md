@@ -7,7 +7,7 @@
 - [x] Task: Implement Temperature Conversion & Formatting Logic 1ece46c
     - [ ] Sub-task: Write Tests (verify C to F conversion and string formatting without spaces).
     - [ ] Sub-task: Implement helper function or inline logic for conversion and formatting.
-- [ ] Task: Implement Date & SSID Retrieval
+- [x] Task: Implement Date & SSID Retrieval 1852bf9
     - [ ] Sub-task: Write Tests (verify date formatting from `struct tm` and SSID retrieval mock).
     - [ ] Sub-task: Update `js_analysis` or setup to fetch/store date and SSID.
 
