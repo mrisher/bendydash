@@ -4,7 +4,7 @@
 - [x] Task: Generate Smaller WiFi Icon 3fcbb9c
     - [ ] Sub-task: Update `generate_small_assets.py` to create a 12x12 WiFi icon.
     - [ ] Sub-task: Run script and update `small_assets.h`.
-- [ ] Task: Implement Temperature Conversion & Formatting Logic
+- [x] Task: Implement Temperature Conversion & Formatting Logic 1ece46c
     - [ ] Sub-task: Write Tests (verify C to F conversion and string formatting without spaces).
     - [ ] Sub-task: Implement helper function or inline logic for conversion and formatting.
 - [ ] Task: Implement Date & SSID Retrieval
