@@ -29,14 +29,17 @@ struct FamilyMember {
     const char* name;
     const unsigned char* avatar;
     const char* home_time;
+    uint16_t width;
+    uint16_t height;
 };
 
 // Mock Data for Schedule
+// Dimensions taken from header file comments
 FamilyMember family_schedule[] = {
-    {"Oliver", Oliver::IMAGE, "3:30 PM"},
-    {"Naomi", Naomi::IMAGE, "3:30 PM"},
-    {"Daddy", Daddy::IMAGE, "6:00 PM"},
-    {"Mommy", Mommy::IMAGE, "5:30 PM"}
+    {"Oliver", Oliver::IMAGE, "3:30 PM", 64, 87},
+    {"Naomi", Naomi::IMAGE, "3:30 PM", 68, 93},
+    {"Daddy", Daddy::IMAGE, "6:00 PM", 47, 64},
+    {"Mommy", Mommy::IMAGE, "5:30 PM", 48, 84}
 };
 
 // WiFi network SSID and password
@@ -145,41 +148,21 @@ void draw_schedule_cell(int col, int row, int index) {
   int x_start = 210 + (col * 95);
   int y_start = (row * 150);
   
+  uint16_t w = family_schedule[index].width;
+  uint16_t h = family_schedule[index].height;
+
   // Center avatar in the 95px width
-  // Avatar width is 64. Offset = (95 - 64) / 2 = 15.
-  int avatar_x = x_start + 15;
+  // Offset = (95 - width) / 2
+  int avatar_x = x_start + (95 - w) / 2;
   int avatar_y = y_start + 10; // Padding from top
   
-  EPD_ShowPicture(avatar_x, avatar_y, 64, 87, family_schedule[index].avatar, WHITE);
+  EPD_ShowPicture(avatar_x, avatar_y, w, h, family_schedule[index].avatar, WHITE);
   
-  // Name below avatar
-  EPD_ShowString(x_start + 5, avatar_y + 90, family_schedule[index].name, 16, BLACK);
+  // Name below avatar (adjusted for max height of 93)
+  EPD_ShowString(x_start + 5, y_start + 105, family_schedule[index].name, 16, BLACK);
   
   // Time below name
-  EPD_ShowString(x_start + 5, avatar_y + 110, family_schedule[index].home_time, 16, BLACK);
-
-  // Draw separator line
-  EPD_DrawLine(210, 0, 210, 300, BLACK); // Vertical line separating weather from future schedule
-
-  // --- SCHEDULE GRID (Right Side) ---
-  // Cell 0: Top-Left (Oliver)
-  draw_schedule_cell(0, 0, 0);
-  
-  // Cell 1: Top-Right (Naomi)
-  draw_schedule_cell(1, 0, 1);
-  
-  // Cell 2: Bottom-Left (Daddy)
-  draw_schedule_cell(0, 1, 2);
-  
-  // Cell 3: Bottom-Right (Mommy)
-  draw_schedule_cell(1, 1, 3);
-  
-  // --- END OF LAYOUT ---
-
-  // Update the e-ink display content
-  EPD_Display_Part(0, 0, EPD_W, EPD_H, ImageBW); // Refresh the screen display
-
-  EPD_Sleep(); // Enter sleep mode to save energy
+  EPD_ShowString(x_start + 5, y_start + 125, family_schedule[index].home_time, 16, BLACK);
 }
 
 void setup() {
