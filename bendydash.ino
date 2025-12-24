@@ -5,10 +5,26 @@
 #include "EPD_GUI.h"  // Include the EPD_GUI library for graphical user interface (GUI) operations
 #include "pic.h"
 #include "small_assets.h"
+#include "avatars.h"
 #include <time.h>
 
 // Define a black and white image array as the buffer for the e-paper display
 uint8_t ImageBW[15000];  // Define the size based on the resolution of the e-paper display
+
+// Structure for family schedule
+struct FamilyMember {
+    const char* name;
+    const unsigned char* avatar;
+    const char* home_time;
+};
+
+// Mock Data for Schedule
+FamilyMember family_schedule[] = {
+    {"Oliver", gImage_oliver, "3:30 PM"},
+    {"Naomi", gImage_naomi, "3:30 PM"},
+    {"Daddy", gImage_daddy, "6:00 PM"},
+    {"Mommy", gImage_mommy, "5:30 PM"}
+};
 
 // WiFi network SSID and password
 const char* ssid = "bendystraw";
@@ -92,8 +108,8 @@ void UI_weather_forecast()
   EPD_ShowString(15, 138, temp_f.c_str(), 24, BLACK);
 
   // Row 3: Rain forecast % today
-  EPD_ShowString(10, 165, "Rain:", 24, BLACK);
-  EPD_ShowString(85, 165, rain_pop.c_str(), 24, BLACK);
+  EPD_ShowString(10, 195, "Rain:", 24, BLACK);
+  EPD_ShowString(85, 195, rain_pop.c_str(), 24, BLACK);
 
   // Row 4: Status Info (WiFi + SSID + Last Updated)
   // WiFi status icon (Smaller 12x12)
@@ -107,7 +123,7 @@ void UI_weather_forecast()
   
   // Last Updated (Time + Date)
   memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "Upd: %s %s", time_str.c_str(), date_str.c_str());
+  snprintf(buffer, sizeof(buffer), "Updated: %s %s", date_str.c_str(), time_str.c_str());
   EPD_ShowString(10, 270, buffer, 12, BLACK);
 
   // Draw separator line
