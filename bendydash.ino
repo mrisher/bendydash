@@ -85,26 +85,30 @@ void UI_weather_forecast()
 
   // Row 2: Temperature (Large Font)
   memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "%s C", temperature.c_str());
-  EPD_ShowString(10, 90, buffer, 48, BLACK);
+  // temperature string is already formatted as "XX.XXC"
+  EPD_ShowString(10, 90, temperature.c_str(), 48, BLACK);
+  
+  // Fahrenheit below it (Smaller Font)
+  EPD_ShowString(15, 138, temp_f.c_str(), 24, BLACK);
 
   // Row 3: Rain forecast % today
   EPD_ShowString(10, 165, "Rain:", 24, BLACK);
   EPD_ShowString(85, 165, rain_pop.c_str(), 24, BLACK);
 
-  // Row 4: Status Info (WiFi + City + Last Updated)
-  // WiFi status icon
+  // Row 4: Status Info (WiFi + SSID + Last Updated)
+  // WiFi status icon (Smaller 12x12)
   if (WiFi.status() == WL_CONNECTED) {
-    EPD_ShowPicture(10, 240, 24, 24, gImage_wifi_small, WHITE);
+    EPD_ShowPicture(10, 248, 12, 12, gImage_wifi_small, WHITE);
   }
   
-  // City name
-  EPD_ShowString(45, 240, city_js.c_str(), 16, BLACK);
+  // Network SSID (Smaller font, lower position)
+  // Replaces City Name
+  EPD_ShowString(30, 248, wifi_ssid.c_str(), 12, BLACK);
   
-  // Last Updated
+  // Last Updated (Time + Date)
   memset(buffer, 0, sizeof(buffer));
-  snprintf(buffer, sizeof(buffer), "Upd: %s", time_str.c_str());
-  EPD_ShowString(45, 265, buffer, 12, BLACK);
+  snprintf(buffer, sizeof(buffer), "Upd: %s %s", time_str.c_str(), date_str.c_str());
+  EPD_ShowString(10, 270, buffer, 12, BLACK);
 
   // Draw separator line
   EPD_DrawLine(210, 0, 210, 300, BLACK); // Vertical line separating weather from future schedule
