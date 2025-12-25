@@ -43,8 +43,8 @@ FamilyMember family_schedule[] = {
 };
 
 // WiFi network SSID and password
-const char* ssid = "bendystraw";
-const char* password = "smoothie";
+const char* ssid = "zzzzz";
+const char* password = "xxxxx";
 
 // OpenWeatherMap API key
 String openWeatherMapApiKey = "8694ad45d8092e69dab4743c96065901";
