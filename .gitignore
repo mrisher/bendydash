@@ -25,3 +25,4 @@ bin
 
 tools/exclude
 tools/previews/weather_icons_complete_preview.png
+secrets.h

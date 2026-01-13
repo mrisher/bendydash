@@ -5,6 +5,7 @@
 #include "EPD_GUI.h"  // Include the EPD_GUI library for graphical user interface (GUI) operations
 #include "pic.h"
 #include "small_assets.h"
+#include "secrets.h"
 
 namespace Oliver {
 #include "oliver_avatar.h"
@@ -42,12 +43,12 @@ FamilyMember family_schedule[] = {
     {"Mommy", Mommy::IMAGE, "8:00 PM", 64, 87}
 };
 
-// WiFi network SSID and password
-const char* ssid = "zzzzz";
-const char* password = "xxxxx";
+// WiFi network SSID and password are in secrets.h (gitignored)
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
 
 // OpenWeatherMap API key
-String openWeatherMapApiKey = "8694ad45d8092e69dab4743c96065901";
+String openWeatherMapApiKey = OPEN_WEATHER_MAP_API_KEY;
 
 // City and country code to query
 String city = "Paris";
